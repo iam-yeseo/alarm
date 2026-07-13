@@ -3,95 +3,117 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>퇴근 알리미</title>
-  <link rel="stylesheet" href="./style.css" />
+  <title>몇퇴야?</title>
+  <meta name="description" content="퇴근까지 남은 시간과 오늘 번 돈을 실시간으로 알려주는 웹 앱" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⏰</text></svg>" />
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <main class="card">
-    <p class="eyebrow">WORKDAY TRACKER</p>
-    <h1 id="appTitle">퇴근 알리미</h1>
-    <p class="desc">근무 설정에 맞춰 남은 시간과 진행률을 자동 계산합니다.</p>
+    <header class="header">
+      <p class="eyebrow">WORKDAY TRACKER</p>
+      <h1 class="title">몇퇴야?</h1>
+      <p class="subtitle">퇴근까지 남은 시간과 오늘 번 돈을 실시간으로 계산합니다.</p>
+    </header>
 
-    <div class="tabs" role="tablist" aria-label="화면 탭">
-      <button class="tab-btn is-active" id="dashboardTab" data-tab="dashboard" role="tab" aria-selected="true">현황</button>
-      <button class="tab-btn" id="settingsTab" data-tab="settings" role="tab" aria-selected="false">설정</button>
-    </div>
+    <nav class="tabs" role="tablist">
+      <button id="tab-status" class="tab active" role="tab" aria-selected="true" aria-controls="panel-status">현황</button>
+      <button id="tab-settings" class="tab" role="tab" aria-selected="false" aria-controls="panel-settings">설정</button>
+    </nav>
 
-    <section class="tab-panel" id="dashboardPanel" role="tabpanel" aria-labelledby="dashboardTab">
-      <section class="progress-wrap" aria-label="업무 진행률 원형 프로그레스">
-        <svg viewBox="0 0 280 280" aria-hidden="true">
-          <circle class="track" cx="140" cy="140" r="118"></circle>
-          <circle class="progress" id="progressCircle" cx="140" cy="140" r="118"></circle>
+    <!-- 현황 -->
+    <section id="panel-status" class="panel active" role="tabpanel" aria-labelledby="tab-status">
+      <div class="ring-wrap">
+        <svg class="ring" viewBox="0 0 220 220" aria-hidden="true">
+          <circle class="ring-track" cx="110" cy="110" r="96" />
+          <circle class="ring-fill" id="ringFill" cx="110" cy="110" r="96" />
         </svg>
-
-        <div class="center">
-          <div class="percent" id="percentText">0%</div>
-          <div class="subcopy" id="progressCaption">오늘 업무 진행률</div>
-        </div>
-      </section>
-
-      <section class="countdown-info" aria-label="남은 시간">
-        <div class="label" id="timeLabel">퇴근까지 남은 시간</div>
-        <div class="time" id="timeText">0초</div>
-      </section>
-
-      <section class="meta">
-        <button class="meta-item meta-button" id="metaStartBtn" type="button">
-          <span>출근 시간 (탭하여 변경)</span>
-          <strong id="metaStart">09:00</strong>
-        </button>
-        <button class="meta-item meta-button" id="metaEndBtn" type="button">
-          <span>퇴근 시간 (탭하여 변경)</span>
-          <strong id="metaEnd">18:00</strong>
-        </button>
-      </section>
-
-      <section class="time-editor hidden" id="timeEditor" aria-live="polite">
-        <p class="time-editor-title" id="timeEditorTitle">시간 변경</p>
-        <div class="inline-select-row">
-          <select id="editorHourSelect" aria-label="시간"></select>
-          <span class="unit">시</span>
-          <select id="editorMinuteSelect" aria-label="분"></select>
-          <span class="unit">분</span>
-          <button type="button" class="small-btn" id="timeEditorApplyBtn">적용</button>
-          <button type="button" class="small-btn ghost" id="timeEditorCancelBtn">취소</button>
-        </div>
-      </section>
-
-      <p class="footnote" id="footnoteText">총 9시간 기준으로 진행률 계산</p>
-    </section>
-
-    <section class="tab-panel hidden" id="settingsPanel" role="tabpanel" aria-labelledby="settingsTab">
-      <div class="settings-grid">
-        <div class="field">
-          <span>근무 시간</span>
-          <div class="inline-select-row">
-            <select id="workHourSelect" aria-label="근무 시간"></select>
-            <span class="unit">시간</span>
-            <select id="workMinuteSelect" aria-label="근무 분"></select>
-            <span class="unit">분</span>
-          </div>
-          <label class="check-row">
-            <input type="checkbox" id="includeLunchCheckbox" />
-            <span>점심시간 포함 (+1시간)</span>
-          </label>
-          <p class="error-text hidden" id="workDurationError">근무 시간은 0시간 0분으로 설정할 수 없습니다.</p>
-        </div>
-
-        <div class="field">
-          <span>반차 설정</span>
-          <div class="mode-buttons" id="modeButtons">
-            <button type="button" class="mode-btn is-active" data-mode="none">해당없음</button>
-            <button type="button" class="mode-btn" data-mode="am">오전 반차</button>
-            <button type="button" class="mode-btn" data-mode="pm">오후 반차</button>
-            <button type="button" class="mode-btn" data-mode="annual">연차</button>
-          </div>
+        <div class="ring-center">
+          <span class="percent" id="percentText">0%</span>
+          <span class="percent-label" id="percentLabel">오늘 업무 진행률</span>
         </div>
       </div>
+
+      <div class="remaining">
+        <p class="remaining-label" id="remainingLabel">퇴근까지 남은 시간</p>
+        <p class="remaining-time" id="remainingTime">-시간 -분 -초</p>
+      </div>
+
+      <div class="money-grid" id="moneyGrid">
+        <div class="money-card">
+          <p class="money-label">오늘 번 돈</p>
+          <p class="money-value" id="todayEarned">₩0</p>
+        </div>
+        <div class="money-card">
+          <p class="money-label">이달 번 돈</p>
+          <p class="money-value" id="monthEarned">₩0</p>
+        </div>
+      </div>
+      <p class="money-hint" id="moneyHint">설정에서 연봉을 입력하면 실시간으로 번 돈이 표시됩니다.</p>
+
+      <div class="time-grid">
+        <label class="time-card" for="startTime">
+          <span class="time-label">출근 시간 (탭하여 변경)</span>
+          <input type="time" id="startTime" value="09:00" />
+        </label>
+        <div class="time-card">
+          <span class="time-label">퇴근 시간 (자동 계산)</span>
+          <span class="time-value" id="endTime">18:00</span>
+        </div>
+      </div>
+
+      <p class="footnote" id="basisNote">총 9시간 00분 기준으로 계산</p>
+    </section>
+
+    <!-- 설정 -->
+    <section id="panel-settings" class="panel" role="tabpanel" aria-labelledby="tab-settings">
+      <div class="field">
+        <p class="field-label">총 근무시간</p>
+        <div class="inline-selects">
+          <select id="workHours"></select>
+          <span class="unit">시간</span>
+          <select id="workMinutes">
+            <option value="0">00</option>
+            <option value="15">15</option>
+            <option value="30">30</option>
+            <option value="45">45</option>
+          </select>
+          <span class="unit">분</span>
+        </div>
+        <label class="check">
+          <input type="checkbox" id="includeLunch" />
+          <span>점심시간 포함 (+1시간)</span>
+        </label>
+      </div>
+
+      <div class="field">
+        <p class="field-label">반차 · 연차 설정</p>
+        <div class="leave-grid">
+          <button class="leave-btn active" data-leave="none">해당없음</button>
+          <button class="leave-btn" data-leave="am">오전 반차</button>
+          <button class="leave-btn" data-leave="pm">오후 반차</button>
+          <button class="leave-btn" data-leave="full">연차</button>
+        </div>
+      </div>
+
+      <div class="field">
+        <p class="field-label">세전 연봉 (원)</p>
+        <input class="salary-input" type="text" id="salaryInput" inputmode="numeric" placeholder="예) 36,000,000" autocomplete="off" />
+        <p class="field-hint" id="dailyWageHint">연봉 ÷ 12 ÷ 이번 달 평일 수로 일당을 계산합니다.</p>
+      </div>
+
+      <div class="field">
+        <p class="field-label">표시 옵션</p>
+        <label class="check">
+          <input type="checkbox" id="precisepercent" />
+          <span>업무 진행률 소수점 둘째자리까지 표시</span>
+        </label>
+      </div>
+
       <p class="footnote">설정은 브라우저에 자동 저장됩니다.</p>
     </section>
   </main>
 
-  <script src="./script.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>
